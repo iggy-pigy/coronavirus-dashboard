@@ -1,10 +1,12 @@
 import React from "react";
 import Helmet from "react-helmet";
 import L from "leaflet";
+import axios froms "axios";
 
 import Layout from "components/Layout";
 import Container from "components/Container";
 import Map from "components/Map";
+
 
 const LOCATION = {
   lat: 38.9072,
@@ -20,7 +22,19 @@ const IndexPage = () => {
    * @example Here this is and example of being used to zoom in and set a popup on load
    */
 
-  async function mapEffect({ leafletElement: map } = {}) {}
+  async function mapEffect({ leafletElement: map } = {
+    let response;
+
+
+    try {
+      response = await axios.get('https://corona.lmao.ninja/countries');
+    } catch(e) {
+      console.log(`Failed to fetch countries: ${e.message}`, e);
+      return;
+    }
+
+    const { data = [] } = response;}
+
 
   const mapSettings = {
     center: CENTER,
