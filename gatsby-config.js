@@ -1,4 +1,5 @@
 module.exports = {
+  pathPrefix: "/my_project",
   plugins: [
     'gatsby-plugin-resolve-src',
     'gatsby-plugin-sass',
