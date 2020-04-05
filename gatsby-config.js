@@ -1,5 +1,5 @@
 module.exports = {
-  pathPrefix: "/my_project",
+  pathPrefix: "/coronavirus-dashboard",
   plugins: [
     'gatsby-plugin-resolve-src',
     'gatsby-plugin-sass',
