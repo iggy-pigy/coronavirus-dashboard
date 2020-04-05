@@ -34,51 +34,46 @@ const IndexPage = () => {
     const { data = [] } = response;
     const hasData = Array.isArray(data) && data.length > 0;
 
-    if ( !hasData ) return;
+    if (!hasData) return;
 
     const geoJson = {
-      type: ‘FeatureCollection’,
+      type: "FeatureCollection",
       features: data.map((country = {}) => {
         const { countryInfo = {} } = country;
         const { lat, long: lng } = countryInfo;
         return {
-          type: ‘Feature’,
+          type: "Feature",
           properties: {
-          …country,
+            ...country,
           },
           geometry: {
-          type: ‘Point’,
-          coordinates: [ lng, lat ]
-          }
+            type: "Point",
+            coordinates: [lng, lat],
+          },
+        };
+      }),
+    };
+    console.log(geoJson);
+
+    const geoJsonLayers = new L.GeoJSON(geoJson, {
+      pointToLayer: (feature = {}, latlng) => {
+        const { properties = {} } = feature;
+        let updatedFormatted;
+        let casesString;
+
+        const { country, updated, cases, deaths, recovered } = properties;
+
+        casesString = `${cases}`;
+
+        if (cases > 1000) {
+          casesString = `${casesString.slice(0, -3)}k+`;
         }
-      })
-  }
 
-  const geoJsonLayers = new L.GeoJSON(geoJson, {
-    pointToLayer: (feature = {}, latlng) => {
-      const { properties = {} } = feature;
-      let updatedFormatted;
-      let casesString;
+        if (updated) {
+          updatedFormatted = new Date(updated).toLocaleString();
+        }
 
-      const {
-        country,
-        updated,
-        cases,
-        deaths,
-        recovered
-      } = properties
-
-      casesString = `${cases}`;
-
-      if ( cases > 1000 ) {
-        casesString = `${casesString.slice(0, -3)}k+`
-      }
-
-      if ( updated ) {
-        updatedFormatted = new Date(updated).toLocaleString();
-      }
-
-      const html = `
+        const html = `
         <span class="icon-marker">
           <span class="icon-marker-tooltip">
             <h2>${country}</h2>
@@ -89,21 +84,21 @@ const IndexPage = () => {
               <li><strong>Last Update:</strong> ${updatedFormatted}</li>
             </ul>
           </span>
-          ${ casesString }
+          ${casesString}
         </span>
       `;
 
-      return L.marker( latlng, {
-        icon: L.divIcon({
-          className: 'icon',
-          html
-        }),
-        riseOnHover: true
-      });
-    }
-  });
+        return L.marker(latlng, {
+          icon: L.divIcon({
+            className: "icon",
+            html,
+          }),
+          riseOnHover: true,
+        });
+      },
+    });
 
-   geoJsonLayers.addTo(map)
+    geoJsonLayers.addTo(map);
   }
 
   const mapSettings = {
